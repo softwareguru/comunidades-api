@@ -1,5 +1,24 @@
 from pydantic import BaseModel
 
+class CommunityBase(BaseModel):
+    title: str
+    airtable_id: str | None = None
+    description: str | None = None
+    url: str | None = None
+    submitted_by: str | None = None
+
+class CommunityCreate(CommunityBase):
+    pass
+
+class Community(CommunityBase):
+    id: int
+    slug: str
+
+    class Config:
+        orm_mode = True
+
+
+"""
 class ItemBase(BaseModel):
     title: str
     description: str | None = None
@@ -27,5 +46,5 @@ class User(UserBase):
 
     class Config:
         orm_mode = True
-
+"""
 

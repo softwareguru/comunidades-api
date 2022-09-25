@@ -1,9 +1,23 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
+from sqlite3 import Timestamp
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime
 from sqlalchemy.orm import relationship
 
 from database import Base
+import datetime
 
+class Community(Base):
+    __tablename__ = "communities"
+    id = Column(Integer, primary_key=True, index=True)
+    airtable_id = Column(String, index=True)
+    title = Column(String, index=True)
+    slug = Column(String, unique=True, index=True)
+    description = Column(String)
+    url = Column(String)
+    submitted_by = Column(String)
+    created_on = Column(DateTime,default=datetime.datetime.now)
+    last_updated = Column(DateTime, onupdate=datetime.datetime.now)    
 
+"""
 class User(Base):
     __tablename__ = "users"
 
@@ -24,3 +38,5 @@ class Item(Base):
     owner_id = Column(Integer, ForeignKey("users.id"))
 
     owner = relationship("User", back_populates="items")
+"""
+

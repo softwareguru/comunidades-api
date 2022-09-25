@@ -1,31 +1,21 @@
 from sqlalchemy.orm import Session
+from slugify import slugify
 
 import models, schemas
 
-def get_user( db:Session, user_id: int):
-    return db.query(models.User).filter(models.User.id == user_id).first()
+def get_community( db:Session, id: int):
+    return db.query(models.Community).filter(models.Community.id == id).first()
 
-def get_user_by_email(db: Session, email: str):
-    return db.query(models.User).filter(models.User.email== email).first()
+def get_community_by_slug(db: Session, slug: str):
+    return db.query(models.Community).filter(models.Community.slug== slug).first()
 
-def get_users(db: Session, skip: int=0, limit: int=100):
-    return db.query(models.User).offset(skip).limit(limit).all()    
+def get_communities(db: Session, skip: int=0, limit: int=100):
+    return db.query(models.Community).offset(skip).limit(limit).all()    
 
-def create_user(db: Session, user: schemas.UserCreate):
-    fake_hashed_password = user.password + "helloworld"
-    db_user = models.User(email=user.email, hashed_password=fake_hashed_password)
-    db.add(db_user)
+def create_community(db: Session, community: schemas.CommunityCreate):
+    db_comm = models.Community(**community.dict(), slug=slugify(community.title))    
+    db.add(db_comm)
     db.commit()
-    db.refresh(db_user)
-    return db_user
-
-def get_items(db: Session, skip: int=0, limit: int=0):
-    return db.query(models.Item).offset(skip).limit(limit).all()
-
-def create_user_item(db: Session, item: schemas.ItemCreate, user_id: int):
-    db_item = models.Item(**item.dict(), owner_id=user_id)
-    db.add(db_item)
-    db.commit()
-    db.refresh(db_item)
-    return db_item
-    
+    db.refresh(db_comm)
+    return db_comm
+        
