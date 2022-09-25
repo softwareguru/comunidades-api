@@ -4,6 +4,9 @@ from sqlalchemy.orm import Session
 import crud, models, schemas
 from database import SessionLocal, engine
 
+from fastapi.security.api_key import APIKey
+import auth
+
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
@@ -23,7 +26,7 @@ def root():
     return {"message" : "Hello world"}
 
 @app.post("/communities/", response_model=schemas.Community)
-def create_community(community: schemas.CommunityCreate, db: Session = Depends(get_db)):
+def create_community(community: schemas.CommunityCreate, db: Session = Depends(get_db), api_key: APIKey = Depends(auth.get_api_key)):
     return crud.create_community(db=db, community=community)
 
 @app.get("/communities/", response_model=list[schemas.Community])
