@@ -21,10 +21,6 @@ def get_db():
         db.close()
 
 
-@app.get("/")
-def root():
-    return {"message" : "Hello world"}
-
 @app.post("/communities/", response_model=schemas.Community)
 def create_community(community: schemas.CommunityCreate, db: Session = Depends(get_db), api_key: APIKey = Depends(auth.get_api_key)):
     return crud.create_community(db=db, community=community)
