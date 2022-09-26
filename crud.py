@@ -13,6 +13,8 @@ def get_communities(db: Session, skip: int=0, limit: int=100):
     return db.query(models.Community).offset(skip).limit(limit).all()    
 
 def create_community(db: Session, community: schemas.CommunityCreate):
+    tag_list = []
+    topic_list = []
     if community.tags_flat != "":
         tag_list = [x.strip() for x in community.tags_flat.split(',')]
     if community.topics_flat != "":
