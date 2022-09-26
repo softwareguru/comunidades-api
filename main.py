@@ -15,8 +15,6 @@ Obten via API información de comunidades técnicas.
 
 Tenemos contemplado soportar las siguientes entidades:
  * Comunidades (listo)
- * Temas de interés (pronto)
- * Ciudades (pronto)
  * Eventos (pronto)
 
 [Ver código en GitHub](https://github.com/softwareguru/comunidades-api)
