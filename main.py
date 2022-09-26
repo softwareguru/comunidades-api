@@ -68,6 +68,3 @@ def create_community(community: schemas.CommunityCreate, db: Session = Depends(g
     sync_success = github_utils.sync_community(db_comm)
     return db_comm
 
-@app.get("/repos/")
-def get_repos():
-    return github_utils.get_repos()
