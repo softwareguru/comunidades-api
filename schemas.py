@@ -6,8 +6,8 @@ class CommunityBase(BaseModel):
     description: str | None = None
     url: str | None = None
     submitted_by: str | None = None
-    topics_flat: str | None = None
-    tags_flat: str | None = None
+    topics_flat: str = ""
+    tags_flat: str = ""
     
 
 class CommunityCreate(CommunityBase):
