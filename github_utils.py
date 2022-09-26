@@ -4,7 +4,9 @@ from config import Settings
 from functools import lru_cache
 from fastapi import Depends
 
+
 import models
+import yaml
 
 @lru_cache()
 def get_settings():
@@ -26,10 +28,22 @@ def get_repos():
 def sync_community(community: models.Community):
     path = "content/comunidades/"+community.slug+".md"
     message = "Contents synced via API"
+    temas_yaml = ""
+    for element in community.topics:
+        temas_yaml += f" - {element}\n"
+    tags_yaml = ""
+    for element in community.tags:
+        tags_yaml += f" - {element}\n"
+    
+
     content = f"""---
 title: {community.title}
 ext_url: {community.url}
 date: {community.created_on}
+temas:
+{temas_yaml}
+tags:
+{tags_yaml}
 ---
 
 {community.description}
