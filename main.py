@@ -61,17 +61,3 @@ def get_community(community_id: int, db: Session = Depends(get_db)):
 @app.post("/communities/", response_model=schemas.Community)
 def create_community(community: schemas.CommunityCreate, db: Session = Depends(get_db), api_key: APIKey = Depends(auth.get_api_key)):
     return crud.create_community(db=db, community=community)
-
-@app.post("/request")
-def get_request(request: Request, api_key: APIKey = Depends(auth.get_api_key)):
-    return { 
-        "client_host": request.client.host, 
-        "headers" : request.headers
-        }
-
-@app.get("/request")
-def get_request(request: Request):
-    return { 
-        "client_host": request.client.host, 
-        "headers" : request.headers
-        }
