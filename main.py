@@ -1,11 +1,11 @@
 from fastapi import Depends, FastAPI, HTTPException, Request
 from sqlalchemy.orm import Session
 
-import crud, models, schemas
+import crud, models, schemas, auth, github_utils
 from database import SessionLocal, engine
 
 from fastapi.security.api_key import APIKey
-import auth
+from slugify import slugify
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -60,4 +60,14 @@ def get_community(community_id: int, db: Session = Depends(get_db)):
 
 @app.post("/communities/", response_model=schemas.Community)
 def create_community(community: schemas.CommunityCreate, db: Session = Depends(get_db), api_key: APIKey = Depends(auth.get_api_key)):
-    return crud.create_community(db=db, community=community)
+    existing = crud.get_community_by_slug(db=db, slug=slugify(community.title))
+    if existing:
+        db_comm = crud.update_community(db=db, db_comm=existing, incoming=community)
+    else:
+        db_comm = crud.create_community(db=db, community=community)
+    sync_success = github_utils.sync_community(db_comm)
+    return db_comm
+
+@app.get("/repos/")
+def get_repos():
+    return github_utils.get_repos()

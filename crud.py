@@ -18,4 +18,16 @@ def create_community(db: Session, community: schemas.CommunityCreate):
     db.commit()
     db.refresh(db_comm)
     return db_comm
-        
+
+def update_community(db: Session, db_comm: models.Community, incoming: schemas.CommunityCreate):
+    new_data = incoming.dict(exclude_unset=True)
+    for key, value in new_data.items():
+        setattr(db_comm, key, value)
+    db.add(db_comm)
+    db.commit()
+    db.refresh(db_comm)
+    return db_comm
+
+
+
+
