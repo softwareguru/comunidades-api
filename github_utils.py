@@ -2,11 +2,9 @@ from github import Github
 
 from config import Settings
 from functools import lru_cache
-from fastapi import Depends
 
-
-import models
-import yaml
+import schemas
+import datetime
 
 @lru_cache()
 def get_settings():
@@ -18,28 +16,16 @@ settings = get_settings()
 def get_gh():
     return Github(get_settings().github_token)
 
-def get_repos():
-    g = get_gh()
-    d = {}
-    for repo in g.get_user().get_repos():
-        d.update( { repo.name : repo.url })
-    return d
-
-def sync_community(community: models.Community):
+def sync_community(community: schemas.Community):
     path = "content/comunidades/"+community.slug+".md"
     message = "Contents synced via API"
-    temas_yaml = ""
-    for element in community.topics:
-        temas_yaml += f" - {element}\n"
-    tags_yaml = ""
-    for element in community.tags:
-        tags_yaml += f" - {element}\n"
-    
+    temas_yaml = commas_to_yaml(community.topics_flat)
+    tags_yaml = commas_to_yaml(community.tags_flat)    
 
     content = f"""---
 title: {community.title}
 ext_url: {community.url}
-date: {community.created_on}
+lastmod: {datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
 temas:
 {temas_yaml}
 tags:
@@ -64,4 +50,17 @@ def create_or_update_file(path: str, message: str, content: str):
         result = repo.update_file(path, message,content, sha)    
     else:
         result = repo.create_file(path, message,content)    
-    return result["commit"]
+    return result["commit"].url
+
+def make_list(flat_list: str):
+    results = []
+    if flat_list != "":
+        results = [(x.strip()) for x in flat_list.split(',')]
+    return results
+
+def commas_to_yaml(flat_list: str):
+    result = ""
+    tmp_list = make_list(flat_list)    
+    for element in tmp_list:
+        result += f" - {element}\n"
+    return result

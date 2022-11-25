@@ -5,5 +5,4 @@ app.yaml
 .gcloudignore
 *.db
 *.log
-
-
+.DS_Store
