@@ -3,7 +3,6 @@ from fastapi import Depends, FastAPI
 import schemas, auth, github_utils
 
 from fastapi.security.api_key import APIKey
-from slugify import slugify
 
 
 description = """
@@ -28,6 +27,10 @@ async def root():
 
 @app.post("/communities/", status_code=201, )
 async def create_community(community: schemas.Community, api_key: APIKey = Depends(auth.get_api_key)):
-    community.slug=slugify(community.title)
-    result = github_utils.sync_community(community)
+    result = github_utils.sync_item(community)
     return {"result" : result }
+
+@app.post("/test/", status_code=201, )
+async def create_community(community: schemas.Community):
+    result = github_utils.make_content(community)
+    return result
