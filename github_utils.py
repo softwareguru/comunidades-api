@@ -79,11 +79,11 @@ def make_list(flat_list: str, list_title: str = ""):
     results = []
     flat_list = flat_list.replace("\n",",")
     if flat_list != "":
-        if list_title == "tags":
-            results = [x.strip() for x in flat_list.split(',')]
-        else:
-            # If its not the tag list, slugify to make lower case, remove spaces and special chars.
+        if list_title == "topics":
+            # Slugify topics to remove special chars.
             results = [slugify(x.strip()) for x in flat_list.split(',')]
+        else:
+            results = [x.strip() for x in flat_list.split(',')]
     return results
 
 def strlist_to_yaml(flat_list: str, list_title: str = ""):
