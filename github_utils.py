@@ -21,7 +21,7 @@ def sync_item(item: schemas.Item):
     item.slug = slugify(item.title)
 
     # Define the path where you will put your file. If you are using Hugo, this will be content/[name of your entity]/[entity-name].md
-    path = "content/comunidades/"+item.slug+".md"
+    path = get_settings().file_dir+item.slug+".md"
 
     # Set message for commit.
     message = f"{item.title} synced via API on {datetime.datetime.now().strftime('%Y-%m-%d')}"
