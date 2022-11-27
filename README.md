@@ -16,7 +16,7 @@ Instructions:
 Set the following environment variables:
  * API_KEY - Set this same value as a request header named `access-token` in POST calls. Otherwise, you will get a forbidden status code.
  * REPO_NAME - The name of your github repo, in format "owner/repo_name".
- * GITHUB_TOKEN - A token with permission to write to your GitHub repo. If you don't know how to create one, [https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token](read this).
+ * GITHUB_TOKEN - A token with permission to write to your GitHub repo. If you don't know how to create one,  [read this](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token).
   * FILE_DIR - The path inside your repo where you want files to be generated. If you are using Hugo, it will be `content/something/` where something is the name of the entity you are creating.
 
 
