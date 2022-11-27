@@ -1,13 +1,10 @@
 from fastapi import Depends, FastAPI
-
-import schemas, auth, github_utils
-
 from fastapi.security.api_key import APIKey
+import schemas, auth, github_utils
 
 
 description = """
-API para actualizar comunidades en repo de Github.
-
+Micro API para actualizar comunidades en repo de Github.
 [Ver código en GitHub](https://github.com/softwareguru/comunidades-api)
 """
 
@@ -25,12 +22,8 @@ app = FastAPI(
 async def root():
     return {"message" : "It would be nice to config your web server to show an html file instead of this."}
 
-@app.post("/communities/", status_code=201, )
-async def create_community(community: schemas.Community, api_key: APIKey = Depends(auth.get_api_key)):
-    result = github_utils.sync_item(community)
+@app.post("/item/", status_code=201, )
+async def create_item(item: schemas.Item, api_key: APIKey = Depends(auth.get_api_key)):
+    result = github_utils.sync_item(item)
     return {"result" : result }
 
-@app.post("/test/", status_code=201, )
-async def create_community(community: schemas.Community):
-    result = github_utils.make_content(community)
-    return result

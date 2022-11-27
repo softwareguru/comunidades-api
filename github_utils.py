@@ -16,7 +16,7 @@ settings = get_settings()
 def get_gh():
     return Github(get_settings().github_token)
 
-def sync_item(item: schemas.Community):
+def sync_item(item: schemas.Item):
     # Generate a slug from the title. "This Thing" -> "this-thing" so we can use it for filename.
     item.slug = slugify(item.title)
 
@@ -32,7 +32,7 @@ def sync_item(item: schemas.Community):
 
     return result
 
-def make_content(item: schemas.Community):
+def make_content(item: schemas.Item):
     """Reads attributes from an item and arranges them into a single string that will be the contents of a text file"""
 
     content = "---\n"
@@ -47,7 +47,7 @@ def make_content(item: schemas.Community):
         else:
             # If the key starts with strlist_ we add manually the list in yaml format
             list_title = k.replace("strlist_","")
-            content += f'{list_title}: \n{strlist_to_yaml(v)}\n'
+            content += f'{list_title}: \n{strlist_to_yaml(v, list_title)}\n'
 
     content += f'lastmod: {datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}\n'
     content += "---\n\n"
@@ -74,19 +74,23 @@ def create_or_update_file(path: str, message: str, content: str):
         result = repo.create_file(path, message,content)    
     return result["commit"].url
 
-def make_list(flat_list: str):
+def make_list(flat_list: str, list_title: str = ""):
     """Utility function that converts a string of items separated by commas (one, two, three) into a Python list"""
     results = []
     flat_list = flat_list.replace("\n",",")
     if flat_list != "":
-        results = [(x.strip()) for x in flat_list.split(',')]
+        if list_title == "tags":
+            results = [x.strip() for x in flat_list.split(',')]
+        else:
+            # If its not the tag list, slugify to make lower case, remove spaces and special chars.
+            results = [slugify(x.strip()) for x in flat_list.split(',')]
     return results
 
-def strlist_to_yaml(flat_list: str):
+def strlist_to_yaml(flat_list: str, list_title: str = ""):
     """Utility function that converts a string of items separated by commas (one, two, three) into a string of list items in yaml format"""
     result = ""
     # First we convert our string into a Python list
-    tmp_list = make_list(flat_list)    
+    tmp_list = make_list(flat_list, list_title)
     for element in tmp_list:
         result += f" - {element}\n"
     return result

@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-class Community(BaseModel):
+class Item(BaseModel):
     title: str
     slug: str | None = None
     source_id: str | None = None
